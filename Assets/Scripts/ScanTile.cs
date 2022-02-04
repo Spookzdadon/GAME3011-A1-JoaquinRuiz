@@ -8,11 +8,13 @@ public class ScanTile : MonoBehaviour
     public CircleCollider2D circleCollider;
     public BoxCollider2D boxCollider;
     PlayerStats playerStats;
+    MessageBox messageBox;
 
     // Start is called before the first frame update
     void Start()
     {
         playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
+        messageBox = GameObject.FindGameObjectWithTag("MessageBox").GetComponent<MessageBox>();
         FindNeighbours();
     }
 
@@ -34,13 +36,20 @@ public class ScanTile : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (playerStats.currentMode == PlayerStats.Mode.Scan)
+        if (playerStats.currentMode == PlayerStats.Mode.Scan && playerStats.scans > 0)
         {
+            playerStats.scans -= 1;
+
             foreach (GameObject tile in neighbours)
             {
                 Destroy(tile.gameObject);
             }
             Destroy(gameObject);
+        }
+
+        else if (playerStats.currentMode == PlayerStats.Mode.Scan && playerStats.scans <= 0)
+        {
+            messageBox.SetText(1, "You have no more scans!");
         }
     }
 
